@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CrisisLens – AI Disaster Intelligence Platform</title>
+  <link rel="stylesheet" href="/static/css/style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+</head>
+<body>
+
+  <div class="bg-grid"></div>
+  <div class="bg-glow"></div>
+
+  <div class="page-wrapper">
+
+    <!-- HEADER -->
+    <header class="hero-header">
+      <div class="header-badge">
+        <span class="pulse-dot"></span>
+        LIVE SYSTEM ACTIVE
+      </div>
+      <div class="logo-row">
+        <div class="logo-icon">
+          <i class="fa-solid fa-satellite-dish"></i>
+        </div>
+        <div class="logo-text">
+          <h1>CrisisLens</h1>
+          <span class="logo-sub">AI Disaster Intelligence Platform</span>
+        </div>
+      </div>
+      <p class="hero-desc">
+        Upload field images for real-time AI-powered triage, casualty estimation, and severity classification.
+      </p>
+      <div class="hero-stats">
+        <div class="stat"><i class="fa-solid fa-bolt"></i> <span>Real-Time Analysis</span></div>
+        <div class="stat"><i class="fa-solid fa-shield-halved"></i> <span>Severity Triage</span></div>
+        <div class="stat"><i class="fa-solid fa-users"></i> <span>People Detection</span></div>
+      </div>
+    </header>
+
+    <!-- UPLOAD FORM -->
+    <main class="main-container">
+      <section class="upload-section">
+        <form method="POST" enctype="multipart/form-data" id="uploadForm">
+
+          <!-- Hidden real file input, triggered by JS -->
+          <input type="file" name="images" id="fileInput" multiple required accept="image/*" style="display:none;" />
+
+          <!-- Clickable drop zone (no input inside) -->
+          <div class="drop-zone" id="dropZone">
+            <div class="drop-inner">
+              <div class="drop-icon">
+                <i class="fa-solid fa-cloud-arrow-up"></i>
+              </div>
+              <p class="drop-title">Drag &amp; Drop Images Here</p>
+              <p class="drop-sub">or click to browse files</p>
+              <div class="drop-formats">
+                <span>JPG</span><span>PNG</span><span>WEBP</span><span>GIF</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="file-list" id="fileList"></div>
+
+          <button type="submit" class="analyze-btn" id="analyzeBtn">
+            <span class="btn-idle">
+              <i class="fa-solid fa-brain"></i>
+              Analyze Images
+            </span>
+            <span class="btn-loading" style="display:none;">
+              <span class="spinner"></span>
+              Processing...
+            </span>
+          </button>
+
+        </form>
+      </section>
+
+      <!-- RESULTS -->
+      {% if results %}
+      <section class="results-section">
+        <div class="results-header">
+          <h2><i class="fa-solid fa-chart-bar"></i> Analysis Results</h2>
+          <span class="result-count">{{ results|length }} image(s) processed</span>
+        </div>
+
+        <div class="results-grid">
+          {% for r in results %}
+          <div class="result-card" data-index="{{ loop.index0 }}">
+
+            <div class="card-image-wrap">
+              <img src="{{ r.image }}" alt="{{ r.filename }}" class="card-img" />
+              <div class="card-img-overlay">
+                <i class="fa-solid fa-magnifying-glass-plus"></i>
+              </div>
+            </div>
+
+            <div class="card-body">
+              <div class="card-filename">
+                <i class="fa-solid fa-file-image"></i>
+                <span>{{ r.filename }}</span>
+              </div>
+
+              <div class="card-meta">
+                <div class="meta-item">
+                  <span class="meta-label"><i class="fa-solid fa-person"></i> People Detected</span>
+                  <span class="meta-value">{{ r.people }}</span>
+                </div>
+                <div class="meta-item">
+                  <span class="meta-label"><i class="fa-solid fa-triangle-exclamation"></i> Severity</span>
+                  <span class="severity-badge severity-{{ r.severity | lower }}">
+                    {% if r.severity | lower == 'high' %}
+                      <i class="fa-solid fa-circle-exclamation"></i>
+                    {% elif r.severity | lower == 'medium' %}
+                      <i class="fa-solid fa-circle-radiation"></i>
+                    {% else %}
+                      <i class="fa-solid fa-circle-check"></i>
+                    {% endif %}
+                    {{ r.severity | upper }}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+          </div>
+          {% endfor %}
+        </div>
+      </section>
+      {% endif %}
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="site-footer">
+      <div class="footer-inner">
+        <i class="fa-solid fa-satellite-dish"></i>
+        <span>CrisisLens – AI Disaster Response System Prototype</span>
+        <span class="footer-divider">|</span>
+        <span>Built for National Hackathon Demo</span>
+      </div>
+    </footer>
+
+  </div>
+
+  <script src="/static/js/script.js"></script>
+</body>
+</html>
